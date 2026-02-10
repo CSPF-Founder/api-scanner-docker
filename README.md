@@ -137,7 +137,3 @@ docker compose ps
 ## Documentation
 
 Full user manual: [https://cspf-founder.github.io/api-scanner-docker/](https://cspf-founder.github.io/api-scanner-docker/)
-
-## License
-
-Proprietary. See LICENSE file for details.

@@ -2,6 +2,8 @@
 
 API Scanner is an automated security testing tool that scans REST and SOAP APIs for vulnerabilities using OpenAPI/Swagger specifications and WSDL files.
 
+**Docker Hub**: [`cysecurity/api-scanner`](https://hub.docker.com/r/cysecurity/api-scanner)
+
 ## Features
 
 - **[OpenAPI Scan](openapi-scan.md)** - Upload an OpenAPI spec (JSON/YAML) to scan REST API endpoints for security vulnerabilities. Supports unauthenticated and authenticated scans with Basic, Bearer, or API key authentication.

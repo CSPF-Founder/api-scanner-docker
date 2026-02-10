@@ -136,7 +136,7 @@ docker compose ps
 
 ## Documentation
 
-Full user manual: [https://cysecurity.github.io/api-scanner/](https://cysecurity.github.io/api-scanner/)
+Full user manual: [https://cspf-founder.github.io/api-scanner-docker/](https://cspf-founder.github.io/api-scanner-docker/)
 
 ## License
 

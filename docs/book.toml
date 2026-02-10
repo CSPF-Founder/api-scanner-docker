@@ -5,7 +5,7 @@ authors = ["CySecurity"]
 language = "en"
 
 [output.html]
-site-url = "/api-scanner/"
+site-url = "/api-scanner-docker/"
 default-theme = "light"
 preferred-dark-theme = "navy"
-git-repository-url = "https://github.com/cysecurity/api-scanner"
+git-repository-url = "https://github.com/CSPF-Founder/api-scanner-docker"

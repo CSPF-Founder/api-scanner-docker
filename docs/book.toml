@@ -1,0 +1,11 @@
+[book]
+title = "API Scanner"
+description = "User manual for API Scanner"
+authors = ["CySecurity"]
+language = "en"
+
+[output.html]
+site-url = "/api-scanner/"
+default-theme = "light"
+preferred-dark-theme = "navy"
+git-repository-url = "https://github.com/cysecurity/api-scanner"

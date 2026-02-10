@@ -134,6 +134,10 @@ docker compose ps
 
 **Database connection errors:** Wait 30-60 seconds after first start for databases to initialize.
 
+## Documentation
+
+Full user manual: [https://cysecurity.github.io/api-scanner/](https://cysecurity.github.io/api-scanner/)
+
 ## License
 
 Proprietary. See LICENSE file for details.

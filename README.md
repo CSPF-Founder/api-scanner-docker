@@ -17,8 +17,8 @@ API Scanner is an automated API security testing tool that scans REST and SOAP A
 1. **Clone this repository**
 
 ```bash
-git clone https://github.com/cysecurity/api-scanner.git
-cd api-scanner
+git clone https://github.com/CSPF-Founder/api-scanner-docker.git
+cd api-scanner-docker
 ```
 
 2. **Run setup**
@@ -38,7 +38,7 @@ The script will:
 
 Open `https://localhost:4455` in your browser.
 
-> If using a self-signed certificate, your browser will show a security warning — proceed to accept it.
+> If using a self-signed certificate, your browser will show a security warning - proceed to accept it.
 
 ## Manual Setup
 
@@ -92,9 +92,9 @@ All configuration is done through the `.env` file. See `.env.example` for all av
 
 All data is stored in Docker named volumes:
 
-- `mariadb_data` — User accounts, roles, sessions
-- `mongodb_data` — Scan records, results, reports
-- `scanner_data` — Work files, uploaded specs, generated reports
+- `mariadb_data` - User accounts, roles, sessions
+- `mongodb_data` - Scan records, results, reports
+- `scanner_data` - Work files, uploaded specs, generated reports
 
 ## Updating
 

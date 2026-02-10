@@ -1,0 +1,142 @@
+name: api-scanner
+
+services:
+
+  mariadb:
+    image: mariadb:10.11
+    container_name: api-scanner-mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 15s
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - api-scanner
+
+  mongodb:
+    image: mongo:4.4
+    container_name: api-scanner-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_APP_USERNAME: ${MONGO_APP_USERNAME}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - api-scanner
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    container_name: api-scanner-zap
+    restart: always
+    command: >
+      zap.sh -daemon
+      -host 0.0.0.0
+      -port ${ZAP_PORT:-8080}
+      -config api.addrs.addr.name=.*
+      -config api.addrs.addr.regex=true
+      -config api.key=${ZAP_API_KEY}
+    mem_limit: 3g
+    cpus: 1.5
+    environment:
+      JAVA_OPTS: "-Xmx2400m"
+      TZ: ${TZ:-UTC}
+    volumes:
+      - scanner_data:/app/data:ro
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:${ZAP_PORT:-8080}/JSON/core/view/version/?apikey=${ZAP_API_KEY}"]
+      start_period: 30s
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - api-scanner
+
+  api-scanner:
+    image: cysecurity/api-scanner:latest
+    container_name: api-scanner
+    restart: always
+    ports:
+      - "4455:443"
+    environment:
+      # Panel
+      SERVER_ADDRESS: ${SERVER_ADDRESS}
+      USE_TLS: ${USE_TLS}
+      CERT_PATH: ${CERT_PATH}
+      KEY_PATH: ${KEY_PATH}
+      CSRF_KEY: ${CSRF_KEY}
+      CSRF_NAME: ${CSRF_NAME}
+      ALLOWED_INTERNAL_HOSTS: ${ALLOWED_INTERNAL_HOSTS}
+      TRUSTED_ORIGINS: ${TRUSTED_ORIGINS}
+      DBMS_TYPE: ${DBMS_TYPE}
+      DATABASE_URI: ${DATABASE_URI}
+      MIGRATIONS_PREFIX: ${MIGRATIONS_PREFIX}
+      WORK_DIR: ${WORK_DIR}
+      TEMP_UPLOADS_DIR: ${TEMP_UPLOADS_DIR}
+      PRODUCT_TITLE: ${PRODUCT_TITLE}
+      COPYRIGHT_FOOTER_COMPANY: ${COPYRIGHT_FOOTER_COMPANY}
+      CONTACT_ADDRESS: ${CONTACT_ADDRESS}
+      LICENSE_VALIDATION_API: ${LICENSE_VALIDATION_API:-http://localhost}
+      # Engine (manager)
+      SCANNER_DOCKER: ${SCANNER_DOCKER:-unused}
+      FUZZER_IMAGE: ${FUZZER_IMAGE:-unused}
+      MAIN_DOMAIN: ${MAIN_DOMAIN:-localhost}
+      SCANNER_CMD: ${SCANNER_CMD}
+      # Engine (scanner)
+      DB_NAME: ${MONGO_DATABASE_NAME}
+      REMOTE_WORK_DIR: ${REMOTE_WORK_DIR}
+      LOCAL_TEMP_DIR: ${LOCAL_TEMP_DIR}
+      ZAP_HOST: ${ZAP_HOST}
+      ZAP_PORT: ${ZAP_PORT}
+      ZAP_API_KEY: ${ZAP_API_KEY}
+      CATS_BIN_PATH: ${CATS_BIN_PATH}
+      REPORTER_BIN_PATH: ${REPORTER_BIN_PATH}
+      # Shared
+      MONGO_DATABASE_URI: ${MONGO_DATABASE_URI}
+      MONGO_DATABASE_NAME: ${MONGO_DATABASE_NAME}
+      LOG_LEVEL: ${LOG_LEVEL}
+      LOG_FILENAME: ${LOG_FILENAME}
+      USE_DOTENV: "false"
+      TZ: ${TZ:-UTC}
+    volumes:
+      - scanner_data:/app/data
+      - ./certs:/app/certs:ro
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      zap:
+        condition: service_healthy
+    networks:
+      - api-scanner
+
+volumes:
+  mariadb_data:
+  mongodb_data:
+  scanner_data:
+
+networks:
+  api-scanner:
+    driver: bridge

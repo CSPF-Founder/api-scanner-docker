@@ -1,8 +1,8 @@
 # API Scanner - Self-Hosted Deployment
 
-API Scanner is an automated API security testing tool that scans REST and SOAP APIs for vulnerabilities using OpenAPI/Swagger specifications and WSDL files.
+[![Docker Hub](https://img.shields.io/docker/v/cysecurity/api-scanner?label=Docker%20Hub&logo=docker)](https://hub.docker.com/r/cysecurity/api-scanner)
 
-**Docker Hub**: [`cysecurity/api-scanner`](https://hub.docker.com/r/cysecurity/api-scanner)
+API Scanner is an automated API security testing tool that scans REST and SOAP APIs for vulnerabilities using OpenAPI/Swagger specifications and WSDL files.
 
 ## Prerequisites
 

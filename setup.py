@@ -85,12 +85,15 @@ def detect_timezone() -> str:
     return "UTC"
 
 
-def confirm(question: str) -> bool:
+def confirm(question: str, default_yes: bool = False) -> bool:
+    hint = "[Y/n]" if default_yes else "[y/N]"
     try:
-        response = input(f"{question} [y/N]: ").strip().lower()
+        response = input(f"{question} {hint}: ").strip().lower()
     except (EOFError, KeyboardInterrupt):
         print()
         return False
+    if not response:
+        return default_yes
     return response in ("y", "yes")
 
 
@@ -210,7 +213,7 @@ def ensure_tls_certs() -> None:
         print("Please place cert.pem and key.pem in ./certs/ manually.")
         return
 
-    if not confirm("Generate a self-signed certificate for localhost?"):
+    if not confirm("Generate a self-signed certificate for localhost?", default_yes=True):
         print("Skipped. Place cert.pem and key.pem in ./certs/ before starting.")
         return
 
@@ -295,7 +298,7 @@ def main() -> None:
     ensure_tls_certs()
 
     print()
-    if confirm("Start the Docker Compose stack now?"):
+    if confirm("Start the Docker Compose stack now?", default_yes=True):
         start_stack()
     else:
         print("\nTo start later, run:")

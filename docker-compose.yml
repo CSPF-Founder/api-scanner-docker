@@ -121,7 +121,7 @@ services:
       TZ: ${TZ:-UTC}
     volumes:
       - scanner_data:/app/data
-      - ./certs:/app/certs:ro
+      - ./certs:/app/certs
     depends_on:
       mariadb:
         condition: service_healthy
